@@ -1,0 +1,69 @@
+JFDML JFormDesigner: "5.2.1.0.138" Java: "1.8.0_45" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :::p, par l {seq {comp label1:::p:91:p, space :10:10:p, comp txtName:::p:206:p}, seq {comp label2:::p:91:p, space :11:11:p, comp comboboxCategory:::p:205:p}, seq {comp label3:::p:91:p, space :11:11:p, comp comboboxPriority:::p:205:p}, seq {comp label4:::p:91:p, space :14:14:p, comp spinner1:::p:53:p}, seq {comp btnAdd:::p::p, space :146:146:p, comp btnCancel:::p::p}}, space ::16:x}}"
+			"$verticalGroup": "par l {seq l {space :::p, par l {seq {space :6:6:p, comp label1:::p::p}, comp txtName:::p::p}, space :8:8:p, par l {seq {space :4:4:p, comp label2:::p::p}, comp comboboxCategory:::p::p}, space :4:4:p, par l {seq {space :4:4:p, comp label3:::p::p}, comp comboboxPriority:::p::p}, space :10:10:p, par l {seq {space :6:6:p, comp label4:::p::p}, comp spinner1:::p::p}, space :16:16:p, par l {comp btnAdd:::p::p, comp btnCancel:::p::p}, space :::x}}"
+		} ) {
+			name: "this"
+			"$locationPolicy": 0
+			"$sizePolicy": 0
+			"defaultCloseOperation": 2
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "Name:"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "txtName"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label2"
+				"text": "Category:"
+			} )
+			add( new FormComponent( "javax.swing.JComboBox" ) {
+				name: "comboboxCategory"
+				"model": new javax.swing.DefaultComboBoxModel {
+					selectedItem: "Electronics"
+					addElement( "Electronics" )
+					addElement( "Fashion" )
+					addElement( "Health" )
+				}
+			} )
+			add( new FormComponent( "javax.swing.JComboBox" ) {
+				name: "comboboxPriority"
+				"model": new javax.swing.DefaultComboBoxModel {
+					selectedItem: "High"
+					addElement( "High" )
+					addElement( "Moderate" )
+					addElement( "Low" )
+				}
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label3"
+				"text": "Priority:"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label4"
+				"text": "Quantity:"
+			} )
+			add( new FormComponent( "javax.swing.JSpinner" ) {
+				name: "spinner1"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnAdd"
+				"text": "Add"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnAddActionPerformed", true ) )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnCancel"
+				"text": "Cancel"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnCancelActionPerformed", true ) )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 345, 235 )
+		} )
+	}
+}

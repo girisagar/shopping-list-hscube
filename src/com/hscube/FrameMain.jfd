@@ -1,0 +1,128 @@
+JFDML JFormDesigner: "5.2.1.0.138" Java: "1.8.0_45" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :::p, comp tabbedItem:::::x, space :::p}}"
+			"$verticalGroup": "par l {seq t {space :::p, comp tabbedItem:::::x, space :::p}}"
+		} ) {
+			name: "this"
+			"title": "Shopping List (HSCube)"
+			"defaultCloseOperation": 3
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabbedItem"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::l::711:x, seq l {comp btnAdd:::p::p, space :::p, comp btnDelete:::p::p, space :::p, comp btnMoveToWishlist:::p::p, space :0:392:x}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :p:9:p, par b {comp btnAdd::b:p::p, comp btnDelete::b:p::p, comp btnMoveToWishlist::b:p::p}, space :::p, comp scrollPane1::::261:x, space :::p}}"
+				} ) {
+					name: "panelItem"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane1"
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "tblItem"
+							"model": &SwingTableModel0 new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
+								add( new java.util.Vector {
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+								} )
+								add( new java.util.Vector {
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+								} )
+							}, new java.util.Vector {
+								add( "Name" )
+								add( "Category" )
+								add( "Priority" )
+								add( "Quantity" )
+							}, new java.util.Vector {
+								add( class java.lang.Object )
+								add( null )
+								add( null )
+								add( null )
+							}, new java.util.Vector {
+								add( false )
+								add( false )
+								add( false )
+								add( false )
+							}, new java.util.Vector {
+								add( new com.jformdesigner.model.SwingTableColumn( null, 0, 0, 0, false ) )
+								add( new com.jformdesigner.model.SwingTableColumn( null, 0, 0, 0, false ) )
+								add( new com.jformdesigner.model.SwingTableColumn( null, 0, 0, 0, false ) )
+								add( new com.jformdesigner.model.SwingTableColumn( null, 0, 0, 0, false ) )
+							} )
+							"columnSelectionAllowed": true
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnAdd"
+						"text": "Add"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnAddActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnDelete"
+						"text": "Delete"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnMoveToWishlist"
+						"text": "Move to Wishlist"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Item"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane2::l::711:x, seq l {comp btnDeleteWishList:::p::p, space s:::p, comp btnCheckout:::p::p, space :0:505:x}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :p:9:p, par b {comp btnDeleteWishList::b:p::p, comp btnCheckout::b:p::p}, space :::p, comp scrollPane2::::261:x, space :::p}}"
+				} ) {
+					name: "panelItem2"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane2"
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "tblWishlist"
+							"model": #SwingTableModel0
+							"columnSelectionAllowed": true
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnDeleteWishList"
+						"text": "Delete"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnCheckout"
+						"text": "Checkout"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Wishlist"
+				} )
+			} )
+			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "menuBar"
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "mnuFile"
+					"text": "File"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "mnuFileActionPerformed", true ) )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "mnuExit"
+						"text": "Exit"
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "mnuHelp"
+					"text": "Help"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "mnuAbout"
+						"text": "About"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "mnuAboutActionPerformed", true ) )
+					} )
+				} )
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 5, 0 )
+			"size": new java.awt.Dimension( 800, 440 )
+		} )
+	}
+}

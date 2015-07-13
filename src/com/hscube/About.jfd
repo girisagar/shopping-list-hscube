@@ -1,0 +1,51 @@
+JFDML JFormDesigner: "5.2.1.0.138" Java: "1.8.0_45" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {par l {seq l {space :::p, par t:::p {comp label3::::180:x, comp label1::::180:x}, space :::p, comp label2:::p:182:p}, seq l {space :p:45:p, par l:::p {comp label4::l:::x, comp label5::l:::x, comp label6::l:::x, comp label7::l:p:180:p}}}, space ::178:x}, seq t {space :0:206:x, comp label8:::p:232:p, space :p:130:p}}"
+			"$verticalGroup": "par l {seq l {space :::p, par b {comp label1::b:p:49:p, comp label2::b:p:27:p}, space :p:41:p, comp label3:::p::p, space :p:35:p, comp label4:::p::p, space :::p, comp label5:::p::p, space :::p, comp label6:::p::p, space :::p, comp label7:::p::p, space u:::p, comp label8:::p:54:p, space ::24:x}}"
+		} ) {
+			name: "this"
+			"title": "About Shopping List"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "Shopping List"
+				"font": new java.awt.Font( "Lucida Grande", 0, 26 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label2"
+				"text": "v1.0.0"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label3"
+				"text": "Developers:"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label4"
+				"text": "Hari Krishna Chaudhary"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label5"
+				"text": "Sagar Giri"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label6"
+				"text": "Saugat Ligal"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label7"
+				"text": "Sudeep Bagale"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label8"
+				"text": "aserasdfasdf"
+				"background": new java.awt.Color( 255, 51, 153, 255 )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 570, 365 )
+		} )
+	}
+}
