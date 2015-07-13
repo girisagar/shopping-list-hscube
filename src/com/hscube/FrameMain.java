@@ -1,12 +1,15 @@
 package com.hscube;
 
 import java.awt.Container;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
-import javax.swing.JTable.PrintMode;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -26,6 +29,8 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import com.user.items.Category;
@@ -37,10 +42,29 @@ import com.user.items.PriorityController;
 import com.user.items.WishList;
 import com.user.items.WishlistController;
 
+import comparators.ItemCategoryAscComparator;
+import comparators.ItemCategoryDesComparator;
+import comparators.ItemNameAscComparator;
+import comparators.ItemNameDesComparator;
+import comparators.ItemPriorityAscComparator;
+import comparators.ItemPriorityDesComparator;
+import comparators.ItemQuantityAscComparator;
+import comparators.ItemQuantityDesComparator;
+
 /**
  * @author s s
  */
+
+
 public class FrameMain extends JFrame {
+	private static ArrayList<Item> arrItems;
+	private static ArrayList<WishList> arrWishLists;
+	
+	private static  Boolean nameAsc = false;
+	private static  Boolean quantityAsc = false;
+	private static  Boolean priorityAsc = false;
+	private static  Boolean categoryAsc = false;
+	
 	public FrameMain() {
 		initComponents();
 	}
@@ -52,6 +76,7 @@ public class FrameMain extends JFrame {
 	
 	private void btnCheckoutActionPerformed(ActionEvent e) {
 		ArrayList<Integer> arrList = new ArrayList<Integer>();
+		
 		ArrayList<Integer> arrListPrinting = new ArrayList<Integer>();
 		
 
@@ -145,8 +170,10 @@ public class FrameMain extends JFrame {
 	private void btnDeleteWishListActionPerformed(ActionEvent e) {
 		ArrayList<Integer> arrList = new ArrayList<Integer>();
 		ArrayList<Integer> arrListRemove = new ArrayList<Integer>();
+		boolean hasRow = false;
 
 		for (int i = 0; i < tblWishlist.getRowCount(); i++) {
+			hasRow = true;
 			Boolean chked = Boolean
 					.valueOf(tblWishlist.getValueAt(i, 1).toString());
 			int ID = (int) tblWishlist.getValueAt(i, 0);
@@ -157,7 +184,17 @@ public class FrameMain extends JFrame {
 				tblWishlist.setValueAt(Boolean.FALSE, i, 1);
 			}
 		}
+		
+		if(!hasRow) {
+			JOptionPane.showMessageDialog(this, "No item to delete.");
+			return;
+		}
 
+		if(arrListRemove.size() == 0) {
+			JOptionPane.showMessageDialog(this, "Item not selected.");
+			return;
+		}
+		
 		if (WishlistController.deleteItemFromWishList(arrList)) {
 			insertTableRowsInWishList((DefaultTableModel) tblWishlist.getModel());
 			
@@ -165,13 +202,14 @@ public class FrameMain extends JFrame {
 		}
 	}
 	
-	
-
 	private void btnDeleteActionPerformed(ActionEvent e) {
+		boolean hasRow = false;
+		
 		ArrayList<Integer> arrList = new ArrayList<Integer>();
 		ArrayList<Integer> arrListRemove = new ArrayList<Integer>();
 
 		for (int i = 0; i < tblItem.getRowCount(); i++) {
+			hasRow = true;
 			Boolean chked = Boolean
 					.valueOf(tblItem.getValueAt(i, 1).toString());
 			int ID = (int) tblItem.getValueAt(i, 0);
@@ -182,6 +220,17 @@ public class FrameMain extends JFrame {
 				tblItem.setValueAt(Boolean.FALSE, i, 1);
 			}
 		}
+		
+		if(!hasRow) {
+			JOptionPane.showMessageDialog(this, "No item to delete.");
+			return;
+		}
+		
+		if(arrListRemove.size() == 0) {
+			JOptionPane.showMessageDialog(this, "Item not selected.");
+			return;
+		}
+		
 
 		if (ItemController.deleteItems(arrList)) {
 			insertTableRows((DefaultTableModel) tblItem.getModel());
@@ -225,9 +274,86 @@ public class FrameMain extends JFrame {
 	}
 
 	private void mnuAboutActionPerformed(ActionEvent e) {
-		// TODO add your code here
+		About about = new About();
+		about.setVisible(true);
+		
 	}
 
+	public class TableHeaderMouseListener extends MouseAdapter {
+		 public String setColumnName(String columnName, int type){
+			 if(type==0){
+				 return columnName+" \u25bc";
+			 }
+			 return columnName+" \u25b2";
+		 }
+		 
+		 public void mouseClicked(MouseEvent event) {
+		        Point point = event.getPoint();
+		        int columnIndex = tblItem.columnAtPoint(point);
+		        String columnName = tblItem.getColumnName(columnIndex);
+				DefaultTableModel modelItem = (DefaultTableModel) tblItem.getModel();
+				
+				JTableHeader th = tblItem.getTableHeader();
+				TableColumnModel tcm = th.getColumnModel();
+				
+				TableColumn tc = tcm.getColumn(columnIndex);				
+				int type = 0;
+				
+		        switch (columnName) {
+					case "Name":
+						if(nameAsc){
+							type = 0;
+							Collections.sort(arrItems, new ItemNameDesComparator());
+							nameAsc = false;
+						}else{
+							type = 1;
+							Collections.sort(arrItems, new ItemNameAscComparator());
+							nameAsc = true;
+						}
+						break;
+					case "Category":
+						if(categoryAsc){
+							type = 0;
+							Collections.sort(arrItems, new ItemCategoryDesComparator());							
+							categoryAsc = false;
+						}else{
+							type = 1;
+							Collections.sort(arrItems, new ItemCategoryAscComparator());
+							categoryAsc = true;
+						}
+						break;
+					case "Quantity":
+						if(quantityAsc){
+							type = 0;
+							Collections.sort(arrItems, new ItemQuantityDesComparator());							
+							quantityAsc = false;
+						}else{
+							type = 1;
+							Collections.sort(arrItems, new ItemQuantityAscComparator());							
+							quantityAsc = true;
+						}
+						break;
+					case "Priority":
+						if(priorityAsc){
+							type = 0;
+							Collections.sort(arrItems, new ItemPriorityDesComparator());							
+							priorityAsc = false;
+						}else{
+							type = 1;
+							Collections.sort(arrItems, new ItemPriorityAscComparator());							
+							priorityAsc = true;
+						}
+						break;
+					default:
+						break;
+				}
+		        tc.setHeaderValue(setColumnName(columnName, type));
+				th.repaint();
+				refreshTableItem(modelItem);
+		    }
+	}
+   
+    
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY
 		// //GEN-BEGIN:initComponents
@@ -512,11 +638,15 @@ public class FrameMain extends JFrame {
 					}
 					scrollPane2.setViewportView(tblWishlist);
 				}
-
+				//--- table column header ---
+				JTableHeader header = tblItem.getTableHeader();	     
+				header.addMouseListener(new TableHeaderMouseListener());
+				
 				// ---- btnDeleteWishList ----
 				btnDeleteWishList.setText("Delete");
 				btnDeleteWishList.addActionListener(e -> btnDeleteWishListActionPerformed(e));
-
+				
+				
 				// ---- btnCheckout ----
 				btnCheckout.setText("Checkout");
 				btnCheckout.addActionListener(e -> btnCheckoutActionPerformed(e));
@@ -599,8 +729,27 @@ public class FrameMain extends JFrame {
 	private void insertTableRows(DefaultTableModel model) {
 		int counter = 0;
 		model.setRowCount(0);
-		ArrayList<Item> arrItems = ItemController.displayList();
+		arrItems = ItemController.displayList();
 		Iterator<Item> it = arrItems.iterator();
+		while (it.hasNext()) {
+			model.addRow(new Object[0]);
+			Item i = (Item) it.next();
+			model.setValueAt(i.getId(), counter, 0);
+			model.setValueAt(Boolean.FALSE, counter, 1);
+			model.setValueAt(i.getName(), counter, 2);
+			model.setValueAt(i.getCategory().getName(), counter, 3);
+			model.setValueAt(i.getPriority().getName(), counter, 4);
+			model.setValueAt(i.getQuantity(), counter, 5);
+			counter++;
+		}
+
+	}
+	
+	private void refreshTableItem(DefaultTableModel model) {
+		int counter = 0;
+		model.setRowCount(0);		
+		Iterator<Item> it = arrItems.iterator();
+		
 		while (it.hasNext()) {
 			model.addRow(new Object[0]);
 			Item i = (Item) it.next();
@@ -618,9 +767,10 @@ public class FrameMain extends JFrame {
 	private void insertTableRowsInWishList(DefaultTableModel model) {
 		int counter = 0;
 		model.setRowCount(0);
-		ArrayList<WishList> arrWishLists = WishlistController
-				.displayList();
+		
+		arrWishLists = WishlistController.displayList();
 		Iterator<WishList> it = arrWishLists.iterator();
+		
 		while (it.hasNext()) {
 			model.addRow(new Object[0]);
 			WishList w = (WishList) it.next();
@@ -672,6 +822,11 @@ public class FrameMain extends JFrame {
 
 		private void btnAddActionPerformed(ActionEvent e) {
 			// add the item to the database
+			
+			if(txtName.getText().trim().equals("")) {
+				JOptionPane.showMessageDialog(this, "Enter the name for an item.");
+				return;
+			}
 
 			Item item = new Item(0, txtName.getText(),
 					CategoryController.getCategoryByName(comboboxCategory
@@ -688,6 +843,7 @@ public class FrameMain extends JFrame {
 
 		}
 
+		
 		private void initComponents() {
 			
 			label1 = new JLabel();
