@@ -1,8 +1,5 @@
 package com.hscube;
-<<<<<<< HEAD
 
-=======
->>>>>>> 036c6a53973759be002754dd76269dfe56d0ef57
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
