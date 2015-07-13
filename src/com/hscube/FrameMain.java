@@ -190,8 +190,6 @@ public class FrameMain extends JFrame {
 		}
 	}
 	
-	
-
 	private void btnDeleteActionPerformed(ActionEvent e) {
 		boolean hasRow = false;
 		
@@ -260,7 +258,9 @@ public class FrameMain extends JFrame {
 	}
 
 	private void mnuAboutActionPerformed(ActionEvent e) {
-		// TODO add your code here
+		About about = new About();
+		about.setVisible(true);
+		
 	}
 
 	public class TableHeaderMouseListener extends MouseAdapter {
