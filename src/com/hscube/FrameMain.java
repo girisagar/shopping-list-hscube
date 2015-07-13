@@ -1,12 +1,14 @@
 package com.hscube;
 
 import java.awt.Container;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.JTable.PrintMode;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -26,6 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
 import com.user.items.Category;
@@ -224,6 +227,33 @@ public class FrameMain extends JFrame {
 		// TODO add your code here
 	}
 
+	public class TableHeaderMouseListener extends MouseAdapter {
+		
+		 public void mouseClicked(MouseEvent event) {
+		        Point point = event.getPoint();
+		        int columnIndex = tblItem.columnAtPoint(point);
+		        String columnName = tblItem.getColumnName(columnIndex);
+		        
+		        switch (columnName) {
+				case "Name":
+					System.out.println("Name Clicked");
+					break;
+				case "Category":
+					System.out.println("Category Clicked");
+					break;
+				case "Quantity":
+					System.out.println("Quantity Clicked");
+					break;
+				case "Priority":
+					System.out.println("Quantity Clicked");
+					break;
+				default:
+					break;
+				}
+		    }
+	}
+   
+    
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY
 		// //GEN-BEGIN:initComponents
@@ -495,11 +525,15 @@ public class FrameMain extends JFrame {
 					}
 					scrollPane2.setViewportView(tblWishlist);
 				}
-
+				//--- table column header ---
+				JTableHeader header = tblItem.getTableHeader();	     
+				header.addMouseListener(new TableHeaderMouseListener());
+				
 				// ---- btnDeleteWishList ----
 				btnDeleteWishList.setText("Delete");
 				btnDeleteWishList.addActionListener(e -> btnDeleteWishListActionPerformed(e));
-
+				
+				
 				// ---- btnCheckout ----
 				btnCheckout.setText("Checkout");
 				btnCheckout.addActionListener(e -> btnCheckoutActionPerformed(e));
