@@ -148,8 +148,10 @@ public class FrameMain extends JFrame {
 	private void btnDeleteWishListActionPerformed(ActionEvent e) {
 		ArrayList<Integer> arrList = new ArrayList<Integer>();
 		ArrayList<Integer> arrListRemove = new ArrayList<Integer>();
+		boolean hasRow = false;
 
 		for (int i = 0; i < tblWishlist.getRowCount(); i++) {
+			hasRow = true;
 			Boolean chked = Boolean
 					.valueOf(tblWishlist.getValueAt(i, 1).toString());
 			int ID = (int) tblWishlist.getValueAt(i, 0);
@@ -160,7 +162,17 @@ public class FrameMain extends JFrame {
 				tblWishlist.setValueAt(Boolean.FALSE, i, 1);
 			}
 		}
+		
+		if(!hasRow) {
+			JOptionPane.showMessageDialog(this, "No item to delete.");
+			return;
+		}
 
+		if(arrListRemove.size() == 0) {
+			JOptionPane.showMessageDialog(this, "Item not selected.");
+			return;
+		}
+		
 		if (WishlistController.deleteItemFromWishList(arrList)) {
 			insertTableRowsInWishList((DefaultTableModel) tblWishlist.getModel());
 			
@@ -171,10 +183,13 @@ public class FrameMain extends JFrame {
 	
 
 	private void btnDeleteActionPerformed(ActionEvent e) {
+		boolean hasRow = false;
+		
 		ArrayList<Integer> arrList = new ArrayList<Integer>();
 		ArrayList<Integer> arrListRemove = new ArrayList<Integer>();
 
 		for (int i = 0; i < tblItem.getRowCount(); i++) {
+			hasRow = true;
 			Boolean chked = Boolean
 					.valueOf(tblItem.getValueAt(i, 1).toString());
 			int ID = (int) tblItem.getValueAt(i, 0);
@@ -185,6 +200,17 @@ public class FrameMain extends JFrame {
 				tblItem.setValueAt(Boolean.FALSE, i, 1);
 			}
 		}
+		
+		if(!hasRow) {
+			JOptionPane.showMessageDialog(this, "No item to delete.");
+			return;
+		}
+		
+		if(arrListRemove.size() == 0) {
+			JOptionPane.showMessageDialog(this, "Item not selected.");
+			return;
+		}
+		
 
 		if (ItemController.deleteItems(arrList)) {
 			insertTableRows((DefaultTableModel) tblItem.getModel());
@@ -688,6 +714,11 @@ public class FrameMain extends JFrame {
 
 		private void btnAddActionPerformed(ActionEvent e) {
 			// add the item to the database
+			
+			if(txtName.getText().trim().equals("")) {
+				JOptionPane.showMessageDialog(this, "Enter the name for an item.");
+				return;
+			}
 
 			Item item = new Item(0, txtName.getText(),
 					CategoryController.getCategoryByName(comboboxCategory
