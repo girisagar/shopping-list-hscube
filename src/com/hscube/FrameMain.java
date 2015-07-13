@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import javax.swing.DefaultComboBoxModel;
@@ -40,10 +41,18 @@ import com.user.items.PriorityController;
 import com.user.items.WishList;
 import com.user.items.WishlistController;
 
+import comparators.ItemNameAscComparator;
+import comparators.ItemNameDesComparator;
+
 /**
  * @author s s
  */
+
+
 public class FrameMain extends JFrame {
+	private static ArrayList<Item> arrItems;
+	private static ArrayList<WishList> arrWishLists;
+	private static  Boolean nameAsc = false;
 	public FrameMain() {
 		initComponents();
 	}
@@ -55,6 +64,7 @@ public class FrameMain extends JFrame {
 	
 	private void btnCheckoutActionPerformed(ActionEvent e) {
 		ArrayList<Integer> arrList = new ArrayList<Integer>();
+		
 		ArrayList<Integer> arrListPrinting = new ArrayList<Integer>();
 		
 
@@ -255,6 +265,22 @@ public class FrameMain extends JFrame {
 
 	public class TableHeaderMouseListener extends MouseAdapter {
 		
+//		public class ItemNameAscComparator implements Comparator<Item> {
+//
+//			public int compare(Item item1, Item item2) {
+//
+//				String itemName1 = item1.getName().toUpperCase();
+//				String itemName2 = item2.getName().toUpperCase();
+//
+//				// ascending order
+//				return itemName1.compareTo(itemName2);
+//
+//				// descending order
+//				// return fruitName2.compareTo(fruitName1);
+//			}
+//
+//		}
+		
 		 public void mouseClicked(MouseEvent event) {
 		        Point point = event.getPoint();
 		        int columnIndex = tblItem.columnAtPoint(point);
@@ -262,7 +288,16 @@ public class FrameMain extends JFrame {
 		        
 		        switch (columnName) {
 				case "Name":
-					System.out.println("Name Clicked");
+					DefaultTableModel model2 = (DefaultTableModel) tblItem.getModel();
+					if(nameAsc){
+						Collections.sort(arrItems, new ItemNameDesComparator());
+						nameAsc = false;
+					}else{
+						Collections.sort(arrItems, new ItemNameAscComparator());
+						nameAsc = true;
+					}
+					
+					insertTableRows2(model2);
 					break;
 				case "Category":
 					System.out.println("Category Clicked");
@@ -642,7 +677,26 @@ public class FrameMain extends JFrame {
 	private void insertTableRows(DefaultTableModel model) {
 		int counter = 0;
 		model.setRowCount(0);
-		ArrayList<Item> arrItems = ItemController.displayList();
+		arrItems = ItemController.displayList();
+		Iterator<Item> it = arrItems.iterator();
+		while (it.hasNext()) {
+			model.addRow(new Object[0]);
+			Item i = (Item) it.next();
+			model.setValueAt(i.getId(), counter, 0);
+			model.setValueAt(Boolean.FALSE, counter, 1);
+			model.setValueAt(i.getName(), counter, 2);
+			model.setValueAt(i.getCategory().getName(), counter, 3);
+			model.setValueAt(i.getPriority().getName(), counter, 4);
+			model.setValueAt(i.getQuantity(), counter, 5);
+			counter++;
+		}
+
+	}
+	
+	private void insertTableRows2(DefaultTableModel model) {
+		int counter = 0;
+		model.setRowCount(0);
+		
 		Iterator<Item> it = arrItems.iterator();
 		while (it.hasNext()) {
 			model.addRow(new Object[0]);
@@ -661,9 +715,10 @@ public class FrameMain extends JFrame {
 	private void insertTableRowsInWishList(DefaultTableModel model) {
 		int counter = 0;
 		model.setRowCount(0);
-		ArrayList<WishList> arrWishLists = WishlistController
-				.displayList();
+		
+		arrWishLists = WishlistController.displayList();
 		Iterator<WishList> it = arrWishLists.iterator();
+		
 		while (it.hasNext()) {
 			model.addRow(new Object[0]);
 			WishList w = (WishList) it.next();

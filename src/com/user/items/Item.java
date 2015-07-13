@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 import driver.Driver;
 
-public class Item {
+public class Item{
 	private int id;
 	private String name;
 	private Category category;
