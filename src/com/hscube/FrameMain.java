@@ -30,6 +30,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import com.user.items.Category;
@@ -41,8 +42,14 @@ import com.user.items.PriorityController;
 import com.user.items.WishList;
 import com.user.items.WishlistController;
 
+import comparators.ItemCategoryAscComparator;
+import comparators.ItemCategoryDesComparator;
 import comparators.ItemNameAscComparator;
 import comparators.ItemNameDesComparator;
+import comparators.ItemPriorityAscComparator;
+import comparators.ItemPriorityDesComparator;
+import comparators.ItemQuantityAscComparator;
+import comparators.ItemQuantityDesComparator;
 
 /**
  * @author s s
@@ -52,7 +59,12 @@ import comparators.ItemNameDesComparator;
 public class FrameMain extends JFrame {
 	private static ArrayList<Item> arrItems;
 	private static ArrayList<WishList> arrWishLists;
+	
 	private static  Boolean nameAsc = false;
+	private static  Boolean quantityAsc = false;
+	private static  Boolean priorityAsc = false;
+	private static  Boolean categoryAsc = false;
+	
 	public FrameMain() {
 		initComponents();
 	}
@@ -264,53 +276,76 @@ public class FrameMain extends JFrame {
 	}
 
 	public class TableHeaderMouseListener extends MouseAdapter {
-		
-//		public class ItemNameAscComparator implements Comparator<Item> {
-//
-//			public int compare(Item item1, Item item2) {
-//
-//				String itemName1 = item1.getName().toUpperCase();
-//				String itemName2 = item2.getName().toUpperCase();
-//
-//				// ascending order
-//				return itemName1.compareTo(itemName2);
-//
-//				// descending order
-//				// return fruitName2.compareTo(fruitName1);
-//			}
-//
-//		}
-		
+		 public String setColumnName(String columnName, int type){
+			 if(type==0){
+				 return columnName+" \u25bc";
+			 }
+			 return columnName+" \u25b2";
+		 }
+		 
 		 public void mouseClicked(MouseEvent event) {
 		        Point point = event.getPoint();
 		        int columnIndex = tblItem.columnAtPoint(point);
 		        String columnName = tblItem.getColumnName(columnIndex);
-		        
+				DefaultTableModel modelItem = (DefaultTableModel) tblItem.getModel();
+				
+				JTableHeader th = tblItem.getTableHeader();
+				TableColumnModel tcm = th.getColumnModel();
+				
+				TableColumn tc = tcm.getColumn(columnIndex);				
+				int type = 0;
+				
 		        switch (columnName) {
-				case "Name":
-					DefaultTableModel model2 = (DefaultTableModel) tblItem.getModel();
-					if(nameAsc){
-						Collections.sort(arrItems, new ItemNameDesComparator());
-						nameAsc = false;
-					}else{
-						Collections.sort(arrItems, new ItemNameAscComparator());
-						nameAsc = true;
-					}
-					
-					insertTableRows2(model2);
-					break;
-				case "Category":
-					System.out.println("Category Clicked");
-					break;
-				case "Quantity":
-					System.out.println("Quantity Clicked");
-					break;
-				case "Priority":
-					System.out.println("Quantity Clicked");
-					break;
-				default:
-					break;
+					case "Name":
+						if(nameAsc){
+							type = 0;
+							Collections.sort(arrItems, new ItemNameDesComparator());
+							nameAsc = false;
+						}else{
+							type = 1;
+							Collections.sort(arrItems, new ItemNameAscComparator());
+							nameAsc = true;
+						}
+						break;
+					case "Category":
+						if(categoryAsc){
+							type = 0;
+							Collections.sort(arrItems, new ItemCategoryDesComparator());							
+							categoryAsc = false;
+						}else{
+							type = 1;
+							Collections.sort(arrItems, new ItemCategoryAscComparator());
+							categoryAsc = true;
+						}
+						break;
+					case "Quantity":
+						if(quantityAsc){
+							type = 0;
+							Collections.sort(arrItems, new ItemQuantityDesComparator());							
+							quantityAsc = false;
+						}else{
+							type = 1;
+							Collections.sort(arrItems, new ItemQuantityAscComparator());							
+							quantityAsc = true;
+						}
+						break;
+					case "Priority":
+						if(priorityAsc){
+							type = 0;
+							Collections.sort(arrItems, new ItemPriorityDesComparator());							
+							priorityAsc = false;
+						}else{
+							type = 1;
+							Collections.sort(arrItems, new ItemPriorityAscComparator());							
+							priorityAsc = true;
+						}
+						break;
+					default:
+						break;
 				}
+		        tc.setHeaderValue(setColumnName(columnName, type));
+				th.repaint();
+				refreshTableItem(modelItem);
 		    }
 	}
    
@@ -693,11 +728,11 @@ public class FrameMain extends JFrame {
 
 	}
 	
-	private void insertTableRows2(DefaultTableModel model) {
+	private void refreshTableItem(DefaultTableModel model) {
 		int counter = 0;
-		model.setRowCount(0);
-		
+		model.setRowCount(0);		
 		Iterator<Item> it = arrItems.iterator();
+		
 		while (it.hasNext()) {
 			model.addRow(new Object[0]);
 			Item i = (Item) it.next();
@@ -790,6 +825,7 @@ public class FrameMain extends JFrame {
 
 		}
 
+		
 		private void initComponents() {
 			
 			label1 = new JLabel();

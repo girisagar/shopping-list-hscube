@@ -13,9 +13,5 @@ public class ItemNameDesComparator implements Comparator<Item> {
 
 		// ascending order
 		return  itemName1.compareTo(itemName2);
-
-		// descending order
-		// return fruitName2.compareTo(fruitName1);
 	}
-
 }
