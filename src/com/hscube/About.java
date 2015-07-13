@@ -1,3 +1,5 @@
+package com.hscube;
+
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.GroupLayout;

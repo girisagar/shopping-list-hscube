@@ -215,6 +215,10 @@ public class FrameMain extends JFrame {
 		}
 
 	}
+	
+	private void btnPrintActionPerformed(ActionEvent e) {
+		JOptionPane.showMessageDialog(this, "Need to print the items");
+	}
 
 	private void mnuFileActionPerformed(ActionEvent e) {
 		// TODO add your code here
@@ -245,6 +249,7 @@ public class FrameMain extends JFrame {
 		tblWishlist = new JTable();
 		btnDeleteWishList = new JButton();
 		btnCheckout = new JButton();
+		btnPrint = new JButton();
 
 		// ======== this ========
 		setTitle("Shopping List (HSCube)");
@@ -365,6 +370,10 @@ public class FrameMain extends JFrame {
 				btnMoveToWishlist.setText("Move to Wishlist");
 				btnMoveToWishlist
 						.addActionListener(e -> btnMoveToWishlistActionPerformed(e));
+				
+				// ---- btnPrint ----
+				btnPrint.setText("Print");
+				btnPrint.addActionListener(e -> btnPrintActionPerformed(e));
 
 				GroupLayout panelItemLayout = new GroupLayout(panelItem);
 				panelItem.setLayout(panelItemLayout);
@@ -396,6 +405,12 @@ public class FrameMain extends JFrame {
 																						LayoutStyle.ComponentPlacement.RELATED)
 																				.addComponent(
 																						btnMoveToWishlist)
+																				.addPreferredGap(
+																						LayoutStyle.ComponentPlacement.RELATED)
+																				.addComponent(
+																						btnPrint)
+																				.addPreferredGap(
+																						LayoutStyle.ComponentPlacement.RELATED)
 																				.addGap(0,
 																						392,
 																						Short.MAX_VALUE)))
@@ -416,7 +431,9 @@ public class FrameMain extends JFrame {
 																.addComponent(
 																		btnDelete)
 																.addComponent(
-																		btnMoveToWishlist))
+																		btnMoveToWishlist)
+																.addComponent(
+																		btnPrint))
 												.addPreferredGap(
 														LayoutStyle.ComponentPlacement.RELATED)
 												.addComponent(
@@ -640,6 +657,7 @@ public class FrameMain extends JFrame {
 	private JTable tblWishlist;
 	private JButton btnDeleteWishList;
 	private JButton btnCheckout;
+	private JButton btnPrint;
 
 	// JFormDesigner - End of variables declaration //GEN-END:variables
 
@@ -682,6 +700,7 @@ public class FrameMain extends JFrame {
 			spinnerQuantity = new JSpinner();
 			btnAdd = new JButton();
 			btnCancel = new JButton();
+			btnPrint = new JButton();
 			
 			spinnerQuantity.setValue(new Integer(1));
 
