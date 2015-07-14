@@ -264,6 +264,10 @@ public class FrameMain extends JFrame {
 		}
 
 	}
+	
+	private void btnPrintActionPerformed(ActionEvent e) {
+		JOptionPane.showMessageDialog(this, "Need to print the items");
+	}
 
 	private void mnuFileActionPerformed(ActionEvent e) {
 		// TODO add your code here
@@ -283,6 +287,16 @@ public class FrameMain extends JFrame {
 			 return columnName+" \u25b2";
 		 }
 		 
+		 public void resetTableHeaderColumn(){
+			 JTableHeader th = tblItem.getTableHeader();
+			 TableColumnModel tcm = th.getColumnModel();
+			 for(int columnIndex=0; columnIndex<  tblItem.getColumnCount(); columnIndex++){				 
+				 TableColumn tc = tcm.getColumn(columnIndex);
+				 tc.setHeaderValue(tblItem.getColumnName(columnIndex));
+			 }
+			 th.repaint();
+		 }
+		 
 		 public void mouseClicked(MouseEvent event) {
 		        Point point = event.getPoint();
 		        int columnIndex = tblItem.columnAtPoint(point);
@@ -292,7 +306,9 @@ public class FrameMain extends JFrame {
 				JTableHeader th = tblItem.getTableHeader();
 				TableColumnModel tcm = th.getColumnModel();
 				
-				TableColumn tc = tcm.getColumn(columnIndex);				
+				TableColumn tc = tcm.getColumn(columnIndex);
+				resetTableHeaderColumn();
+				
 				int type = 0;
 				
 		        switch (columnName) {
@@ -341,11 +357,14 @@ public class FrameMain extends JFrame {
 						}
 						break;
 					default:
+						type = -1;
 						break;
 				}
-		        tc.setHeaderValue(setColumnName(columnName, type));
-				th.repaint();
-				refreshTableItem(modelItem);
+		        if(type >-1){
+		        	tc.setHeaderValue(setColumnName(columnName, type));
+					th.repaint();
+					refreshTableItem(modelItem);
+		        }		        
 		    }
 	}
    
@@ -371,6 +390,7 @@ public class FrameMain extends JFrame {
 		tblWishlist = new JTable();
 		btnDeleteWishList = new JButton();
 		btnCheckout = new JButton();
+		btnPrint = new JButton();
 
 		// ======== this ========
 		setTitle("Shopping List (HSCube)");
@@ -491,6 +511,10 @@ public class FrameMain extends JFrame {
 				btnMoveToWishlist.setText("Move to Wishlist");
 				btnMoveToWishlist
 						.addActionListener(e -> btnMoveToWishlistActionPerformed(e));
+				
+				// ---- btnPrint ----
+				btnPrint.setText("Print");
+				btnPrint.addActionListener(e -> btnPrintActionPerformed(e));
 
 				GroupLayout panelItemLayout = new GroupLayout(panelItem);
 				panelItem.setLayout(panelItemLayout);
@@ -522,6 +546,12 @@ public class FrameMain extends JFrame {
 																						LayoutStyle.ComponentPlacement.RELATED)
 																				.addComponent(
 																						btnMoveToWishlist)
+																				.addPreferredGap(
+																						LayoutStyle.ComponentPlacement.RELATED)
+																				.addComponent(
+																						btnPrint)
+																				.addPreferredGap(
+																						LayoutStyle.ComponentPlacement.RELATED)
 																				.addGap(0,
 																						392,
 																						Short.MAX_VALUE)))
@@ -542,7 +572,9 @@ public class FrameMain extends JFrame {
 																.addComponent(
 																		btnDelete)
 																.addComponent(
-																		btnMoveToWishlist))
+																		btnMoveToWishlist)
+																.addComponent(
+																		btnPrint))
 												.addPreferredGap(
 														LayoutStyle.ComponentPlacement.RELATED)
 												.addComponent(
@@ -790,6 +822,7 @@ public class FrameMain extends JFrame {
 	private JTable tblWishlist;
 	private JButton btnDeleteWishList;
 	private JButton btnCheckout;
+	private JButton btnPrint;
 
 	// JFormDesigner - End of variables declaration //GEN-END:variables
 
@@ -838,6 +871,7 @@ public class FrameMain extends JFrame {
 			spinnerQuantity = new JSpinner();
 			btnAdd = new JButton();
 			btnCancel = new JButton();
+			btnPrint = new JButton();
 			
 			spinnerQuantity.setValue(new Integer(1));
 

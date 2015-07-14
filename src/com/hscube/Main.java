@@ -14,9 +14,6 @@ public class Main {
 				frame = new FrameMain();
 				frame.setVisible(true);
 			}
-
 		});
-
 	}
-
 }
