@@ -266,11 +266,12 @@ public class FrameMain extends JFrame {
 	}
 	
 	private void btnPrintActionPerformed(ActionEvent e) {
-		JOptionPane.showMessageDialog(this, "Need to print the items");
+		PrintForm printForm = new PrintForm();
+		printForm.setVisible(true);
 	}
 
-	private void mnuFileActionPerformed(ActionEvent e) {
-		// TODO add your code here
+	private void mnuExitActionPerformed(ActionEvent e) {
+		System.exit(0);
 	}
 
 	private void mnuAboutActionPerformed(ActionEvent e) {
@@ -403,7 +404,7 @@ public class FrameMain extends JFrame {
 			// ======== mnuFile ========
 			{
 				mnuFile.setText("File");
-				mnuFile.addActionListener(e -> mnuFileActionPerformed(e));
+				mnuExit.addActionListener(e -> mnuExitActionPerformed(e));
 
 				// ---- mnuExit ----
 				mnuExit.setText("Exit");
@@ -1129,6 +1130,103 @@ public class FrameMain extends JFrame {
 		private JButton btnAdd;
 		private JButton btnCancel;
 		// JFormDesigner - End of variables declaration //GEN-END:variables
+	}
+	
+	
+	//new print form
+	public class PrintForm extends JFrame {
+		public PrintForm() {
+			initComponents();
+		}
+
+		private void initComponents() {
+			// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+			// Generated using JFormDesigner Evaluation license - s s
+			scrollPane1 = new JScrollPane();
+			tblPrintFinal = new JTable();
+			btnPrintFinal = new JButton();
+
+			//======== this ========
+			setTitle("Print Table");
+			setResizable(false);
+			Container contentPane = getContentPane();
+
+			//======== scrollPane1 ========
+			{
+
+				//---- tblPrintFinal ----
+				
+				
+				tblPrintFinal.setModel(tblItem.getModel());
+				{
+					TableColumnModel cm = tblPrintFinal.getColumnModel();
+					
+					cm.getColumn(0).setResizable(false);
+					cm.getColumn(0).setPreferredWidth(0);
+					cm.getColumn(0).setMinWidth(0);
+					cm.getColumn(0).setWidth(0);
+					cm.getColumn(0).setMaxWidth(0);
+					
+					cm.getColumn(1).setResizable(false);
+					cm.getColumn(1).setPreferredWidth(0);
+					cm.getColumn(1).setMinWidth(0);
+					cm.getColumn(1).setWidth(0);
+					cm.getColumn(1).setMaxWidth(0);
+					
+				}
+				scrollPane1.setViewportView(tblPrintFinal);
+			}
+
+			//---- btnPrintFinal ----
+			btnPrintFinal.setText("Print");
+			btnPrintFinal.addActionListener(e -> btnPrintFinalActionListener(e));
+
+			GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+			contentPane.setLayout(contentPaneLayout);
+			contentPaneLayout.setHorizontalGroup(
+				contentPaneLayout.createParallelGroup()
+					.addGroup(contentPaneLayout.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(contentPaneLayout.createParallelGroup()
+							.addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
+							.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+								.addGap(0, 668, Short.MAX_VALUE)
+								.addComponent(btnPrintFinal)))
+						.addContainerGap())
+			);
+			contentPaneLayout.setVerticalGroup(
+				contentPaneLayout.createParallelGroup()
+					.addGroup(contentPaneLayout.createSequentialGroup()
+						.addContainerGap()
+						.addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 393, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(btnPrintFinal)
+						.addContainerGap(7, Short.MAX_VALUE))
+			);
+			pack();
+			setLocationRelativeTo(getOwner());
+			// JFormDesigner - End of component initialization  //GEN-END:initComponents
+		}
+
+		private void btnPrintFinalActionListener(ActionEvent e) {
+			try {
+				boolean printed = tblPrintFinal.print();
+				if(printed){
+					JOptionPane.showMessageDialog(this, "Items Printed.");
+				}
+				
+			} catch (PrinterException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+
+		// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+		// Generated using JFormDesigner Evaluation license - s s
+		private JScrollPane scrollPane1;
+		private JTable tblPrintFinal;
+		private JButton btnPrintFinal;
+		// JFormDesigner - End of variables declaration  //GEN-END:variables
 	}
 
 }
