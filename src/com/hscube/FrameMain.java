@@ -28,11 +28,14 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 import com.user.items.Category;
 import com.user.items.CategoryController;
@@ -56,16 +59,21 @@ import comparators.ItemQuantityDesComparator;
  * @author s s
  */
 
-
 public class FrameMain extends JFrame {
 	private static ArrayList<Item> arrItems;
 	private static ArrayList<WishList> arrWishLists;
+
+	private static Boolean nameAsc = false;
+	private static Boolean quantityAsc = false;
+	private static Boolean priorityAsc = false;
+	private static Boolean categoryAsc = false;
+	private static DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
 	
-	private static  Boolean nameAsc = false;
-	private static  Boolean quantityAsc = false;
-	private static  Boolean priorityAsc = false;
-	private static  Boolean categoryAsc = false;
+	{
+		leftRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+	}
 	
+
 	public FrameMain() {
 		initComponents();
 	}
@@ -74,18 +82,16 @@ public class FrameMain extends JFrame {
 		AddFrames n = new AddFrames();
 		n.setVisible(true);
 	}
-	
+
 	private void btnCheckoutActionPerformed(ActionEvent e) {
 		ArrayList<Integer> arrList = new ArrayList<Integer>();
-		
+
 		ArrayList<Integer> arrListPrinting = new ArrayList<Integer>();
-		
 
 		for (int i = 0; i < tblWishlist.getRowCount(); i++) {
-			Boolean chked = Boolean
-					.valueOf(tblWishlist.getValueAt(i, 1).toString());
+			Boolean chked = Boolean.valueOf(tblWishlist.getValueAt(i, 1).toString());
 			int ID = (int) tblWishlist.getValueAt(i, 0);
-			
+
 			if (chked) {
 				arrList.add(ID);
 				arrListPrinting.add(i);
@@ -93,8 +99,14 @@ public class FrameMain extends JFrame {
 			}
 		}
 		
+		//check for the checkboxes
+		if(arrListPrinting.size() == 0) {
+			JOptionPane.showMessageDialog(this, "Please select item(s) to checkout.", "INFO", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+
 		JTable tblPrint = new JTable();
-		
+
 		DefaultTableModel modelPrint = new DefaultTableModel() {
 
 			/**
@@ -122,52 +134,52 @@ public class FrameMain extends JFrame {
 
 		modelPrint.addColumn("Name");
 		modelPrint.addColumn("Category");
-		modelPrint.addColumn("Priority");
 		modelPrint.addColumn("Quantity");
 
 		// Data Row
 
-
 		{
-			TableColumnModel cm = tblItem.getColumnModel();
+			TableColumnModel cm = tblPrint.getColumnModel();
 			cm.getColumn(0).setResizable(false);
 			cm.getColumn(1).setResizable(false);
 			cm.getColumn(2).setResizable(false);
-			cm.getColumn(3).setResizable(false);
+			
+			
 		}
-		
-		
-		
+
 		int counter = 0;
 		Iterator<Integer> it = arrListPrinting.iterator();
 		while (it.hasNext()) {
 			int row = it.next();
-			
+
 			modelPrint.addRow(new Object[0]);
 			modelPrint.setValueAt(tblWishlist.getValueAt(row, 2), counter, 0);
 			modelPrint.setValueAt(tblWishlist.getValueAt(row, 3), counter, 1);
-			modelPrint.setValueAt(tblWishlist.getValueAt(row, 4), counter, 2);
-			modelPrint.setValueAt(tblWishlist.getValueAt(row, 5), counter, 3);
-			
+			modelPrint.setValueAt(tblWishlist.getValueAt(row, 5), counter, 2);
+
 			counter++;
 		}
-		
-		try {
-			boolean printed = tblPrint.print();
-			if(printed){
-				if (WishlistController.deleteItemFromWishList(arrList)) {
-					insertTableRowsInWishList((DefaultTableModel) tblWishlist.getModel());
-					JOptionPane.showMessageDialog(this, "Items Printed.");
-				}
-			}
-			
-		} catch (PrinterException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
+
+		// try {
+		// boolean printed = tblPrint.print();
+		// if(printed){
+		// if (WishlistController.deleteItemFromWishList(arrList)) {
+		// insertTableRowsInWishList((DefaultTableModel)
+		// tblWishlist.getModel());
+		// JOptionPane.showMessageDialog(this, "Items Printed.");
+		// }
+		// }
+		//
+		// } catch (PrinterException e1) {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// }
+
+		PrintForm printForm = new PrintForm(modelPrint, true);
+		printForm.setVisible(true);
+
 	}
-	
+
 	private void btnDeleteWishListActionPerformed(ActionEvent e) {
 		ArrayList<Integer> arrList = new ArrayList<Integer>();
 		ArrayList<Integer> arrListRemove = new ArrayList<Integer>();
@@ -175,8 +187,7 @@ public class FrameMain extends JFrame {
 
 		for (int i = 0; i < tblWishlist.getRowCount(); i++) {
 			hasRow = true;
-			Boolean chked = Boolean
-					.valueOf(tblWishlist.getValueAt(i, 1).toString());
+			Boolean chked = Boolean.valueOf(tblWishlist.getValueAt(i, 1).toString());
 			int ID = (int) tblWishlist.getValueAt(i, 0);
 			if (chked) {
 				arrList.add(ID);
@@ -185,34 +196,33 @@ public class FrameMain extends JFrame {
 				tblWishlist.setValueAt(Boolean.FALSE, i, 1);
 			}
 		}
-		
-		if(!hasRow) {
+
+		if (!hasRow) {
 			JOptionPane.showMessageDialog(this, "No item to delete.");
 			return;
 		}
 
-		if(arrListRemove.size() == 0) {
+		if (arrListRemove.size() == 0) {
 			JOptionPane.showMessageDialog(this, "Item not selected.");
 			return;
 		}
-		
+
 		if (WishlistController.deleteItemFromWishList(arrList)) {
 			insertTableRowsInWishList((DefaultTableModel) tblWishlist.getModel());
-			
+
 			JOptionPane.showMessageDialog(this, "Items deleted.");
 		}
 	}
-	
+
 	private void btnDeleteActionPerformed(ActionEvent e) {
 		boolean hasRow = false;
-		
+
 		ArrayList<Integer> arrList = new ArrayList<Integer>();
 		ArrayList<Integer> arrListRemove = new ArrayList<Integer>();
 
 		for (int i = 0; i < tblItem.getRowCount(); i++) {
 			hasRow = true;
-			Boolean chked = Boolean
-					.valueOf(tblItem.getValueAt(i, 1).toString());
+			Boolean chked = Boolean.valueOf(tblItem.getValueAt(i, 1).toString());
 			int ID = (int) tblItem.getValueAt(i, 0);
 			if (chked) {
 				arrList.add(ID);
@@ -221,17 +231,16 @@ public class FrameMain extends JFrame {
 				tblItem.setValueAt(Boolean.FALSE, i, 1);
 			}
 		}
-		
-		if(!hasRow) {
+
+		if (!hasRow) {
 			JOptionPane.showMessageDialog(this, "No item to delete.");
 			return;
 		}
-		
-		if(arrListRemove.size() == 0) {
+
+		if (arrListRemove.size() == 0) {
 			JOptionPane.showMessageDialog(this, "Item not selected.");
 			return;
 		}
-		
 
 		if (ItemController.deleteItems(arrList)) {
 			insertTableRows((DefaultTableModel) tblItem.getModel());
@@ -246,8 +255,7 @@ public class FrameMain extends JFrame {
 		ArrayList<Integer> arrList = new ArrayList<Integer>();
 
 		for (int i = 0; i < tblItem.getRowCount(); i++) {
-			Boolean chked = Boolean
-					.valueOf(tblItem.getValueAt(i, 1).toString());
+			Boolean chked = Boolean.valueOf(tblItem.getValueAt(i, 1).toString());
 			int ID = (int) tblItem.getValueAt(i, 0);
 			if (chked) {
 				arrList.add(ID);
@@ -265,9 +273,9 @@ public class FrameMain extends JFrame {
 		}
 
 	}
-	
+
 	private void btnPrintActionPerformed(ActionEvent e) {
-		PrintForm printForm = new PrintForm();
+		PrintForm printForm = new PrintForm(tblItem.getModel(), false);
 		printForm.setVisible(true);
 	}
 
@@ -278,99 +286,98 @@ public class FrameMain extends JFrame {
 	private void mnuAboutActionPerformed(ActionEvent e) {
 		About about = new About();
 		about.setVisible(true);
-		
+
 	}
 
 	public class TableHeaderMouseListener extends MouseAdapter {
-		 public String setColumnName(String columnName, int type){
-			 if(type==0){
-				 return columnName+" \u25bc";
-			 }
-			 return columnName+" \u25b2";
-		 }
-		 
-		 public void resetTableHeaderColumn(){
-			 JTableHeader th = tblItem.getTableHeader();
-			 TableColumnModel tcm = th.getColumnModel();
-			 for(int columnIndex=0; columnIndex<  tblItem.getColumnCount(); columnIndex++){				 
-				 TableColumn tc = tcm.getColumn(columnIndex);
-				 tc.setHeaderValue(tblItem.getColumnName(columnIndex));
-			 }
-			 th.repaint();
-		 }
-		 
-		 public void mouseClicked(MouseEvent event) {
-		        Point point = event.getPoint();
-		        int columnIndex = tblItem.columnAtPoint(point);
-		        String columnName = tblItem.getColumnName(columnIndex);
-				DefaultTableModel modelItem = (DefaultTableModel) tblItem.getModel();
-				
-				JTableHeader th = tblItem.getTableHeader();
-				TableColumnModel tcm = th.getColumnModel();
-				
+		public String setColumnName(String columnName, int type) {
+			if (type == 0) {
+				return columnName + " \u25bc";
+			}
+			return columnName + " \u25b2";
+		}
+
+		public void resetTableHeaderColumn() {
+			JTableHeader th = tblItem.getTableHeader();
+			TableColumnModel tcm = th.getColumnModel();
+			for (int columnIndex = 0; columnIndex < tblItem.getColumnCount(); columnIndex++) {
 				TableColumn tc = tcm.getColumn(columnIndex);
-				resetTableHeaderColumn();
-				
-				int type = 0;
-				
-		        switch (columnName) {
-					case "Name":
-						if(nameAsc){
-							type = 0;
-							Collections.sort(arrItems, new ItemNameDesComparator());
-							nameAsc = false;
-						}else{
-							type = 1;
-							Collections.sort(arrItems, new ItemNameAscComparator());
-							nameAsc = true;
-						}
-						break;
-					case "Category":
-						if(categoryAsc){
-							type = 0;
-							Collections.sort(arrItems, new ItemCategoryDesComparator());							
-							categoryAsc = false;
-						}else{
-							type = 1;
-							Collections.sort(arrItems, new ItemCategoryAscComparator());
-							categoryAsc = true;
-						}
-						break;
-					case "Quantity":
-						if(quantityAsc){
-							type = 0;
-							Collections.sort(arrItems, new ItemQuantityDesComparator());							
-							quantityAsc = false;
-						}else{
-							type = 1;
-							Collections.sort(arrItems, new ItemQuantityAscComparator());							
-							quantityAsc = true;
-						}
-						break;
-					case "Priority":
-						if(priorityAsc){
-							type = 0;
-							Collections.sort(arrItems, new ItemPriorityDesComparator());							
-							priorityAsc = false;
-						}else{
-							type = 1;
-							Collections.sort(arrItems, new ItemPriorityAscComparator());							
-							priorityAsc = true;
-						}
-						break;
-					default:
-						type = -1;
-						break;
+				tc.setHeaderValue(tblItem.getColumnName(columnIndex));
+			}
+			th.repaint();
+		}
+
+		public void mouseClicked(MouseEvent event) {
+			Point point = event.getPoint();
+			int columnIndex = tblItem.columnAtPoint(point);
+			String columnName = tblItem.getColumnName(columnIndex);
+			DefaultTableModel modelItem = (DefaultTableModel) tblItem.getModel();
+
+			JTableHeader th = tblItem.getTableHeader();
+			TableColumnModel tcm = th.getColumnModel();
+
+			TableColumn tc = tcm.getColumn(columnIndex);
+			resetTableHeaderColumn();
+
+			int type = 0;
+
+			switch (columnName) {
+			case "Name":
+				if (nameAsc) {
+					type = 0;
+					Collections.sort(arrItems, new ItemNameDesComparator());
+					nameAsc = false;
+				} else {
+					type = 1;
+					Collections.sort(arrItems, new ItemNameAscComparator());
+					nameAsc = true;
 				}
-		        if(type >-1){
-		        	tc.setHeaderValue(setColumnName(columnName, type));
-					th.repaint();
-					refreshTableItem(modelItem);
-		        }		        
-		    }
+				break;
+			case "Category":
+				if (categoryAsc) {
+					type = 0;
+					Collections.sort(arrItems, new ItemCategoryDesComparator());
+					categoryAsc = false;
+				} else {
+					type = 1;
+					Collections.sort(arrItems, new ItemCategoryAscComparator());
+					categoryAsc = true;
+				}
+				break;
+			case "Quantity":
+				if (quantityAsc) {
+					type = 0;
+					Collections.sort(arrItems, new ItemQuantityDesComparator());
+					quantityAsc = false;
+				} else {
+					type = 1;
+					Collections.sort(arrItems, new ItemQuantityAscComparator());
+					quantityAsc = true;
+				}
+				break;
+			case "Priority":
+				if (priorityAsc) {
+					type = 0;
+					Collections.sort(arrItems, new ItemPriorityDesComparator());
+					priorityAsc = false;
+				} else {
+					type = 1;
+					Collections.sort(arrItems, new ItemPriorityAscComparator());
+					priorityAsc = true;
+				}
+				break;
+			default:
+				type = -1;
+				break;
+			}
+			if (type > -1) {
+				tc.setHeaderValue(setColumnName(columnName, type));
+				th.repaint();
+				refreshTableItem(modelItem);
+			}
+		}
 	}
-   
-    
+
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY
 		// //GEN-BEGIN:initComponents
@@ -511,9 +518,8 @@ public class FrameMain extends JFrame {
 
 				// ---- btnMoveToWishlist ----
 				btnMoveToWishlist.setText("Move to Wishlist");
-				btnMoveToWishlist
-						.addActionListener(e -> btnMoveToWishlistActionPerformed(e));
-				
+				btnMoveToWishlist.addActionListener(e -> btnMoveToWishlistActionPerformed(e));
+
 				// ---- btnPrint ----
 				btnPrint.setText("Print");
 				btnPrint.addActionListener(e -> btnPrintActionPerformed(e));
@@ -521,69 +527,41 @@ public class FrameMain extends JFrame {
 				GroupLayout panelItemLayout = new GroupLayout(panelItem);
 				panelItem.setLayout(panelItemLayout);
 				panelItemLayout
-						.setHorizontalGroup(panelItemLayout
-								.createParallelGroup()
-								.addGroup(
-										panelItemLayout
-												.createSequentialGroup()
-												.addContainerGap()
-												.addGroup(
-														panelItemLayout
-																.createParallelGroup()
-																.addComponent(
-																		scrollPane1,
-																		GroupLayout.DEFAULT_SIZE,
-																		711,
-																		Short.MAX_VALUE)
+						.setHorizontalGroup(
+								panelItemLayout.createParallelGroup()
+										.addGroup(
+												panelItemLayout.createSequentialGroup().addContainerGap()
+														.addGroup(panelItemLayout.createParallelGroup()
+																.addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE,
+																		711, Short.MAX_VALUE)
 																.addGroup(
-																		panelItemLayout
-																				.createSequentialGroup()
-																				.addComponent(
-																						btnAdd)
+																		panelItemLayout.createSequentialGroup()
+																				.addComponent(btnAdd)
 																				.addPreferredGap(
 																						LayoutStyle.ComponentPlacement.RELATED)
-																				.addComponent(
-																						btnDelete)
-																				.addPreferredGap(
-																						LayoutStyle.ComponentPlacement.RELATED)
-																				.addComponent(
-																						btnMoveToWishlist)
-																				.addPreferredGap(
-																						LayoutStyle.ComponentPlacement.RELATED)
-																				.addComponent(
-																						btnPrint)
-																				.addPreferredGap(
-																						LayoutStyle.ComponentPlacement.RELATED)
-																				.addGap(0,
-																						392,
-																						Short.MAX_VALUE)))
-												.addContainerGap()));
+																		.addComponent(btnDelete)
+																		.addPreferredGap(
+																				LayoutStyle.ComponentPlacement.RELATED)
+												.addComponent(btnMoveToWishlist)
+												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+												.addComponent(btnPrint)
+												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+												.addGap(0, 392, Short.MAX_VALUE))).addContainerGap()));
 				panelItemLayout
-						.setVerticalGroup(panelItemLayout
-								.createParallelGroup()
-								.addGroup(
-										panelItemLayout
-												.createSequentialGroup()
-												.addGap(9, 9, 9)
-												.addGroup(
-														panelItemLayout
-																.createParallelGroup(
-																		GroupLayout.Alignment.BASELINE)
-																.addComponent(
-																		btnAdd)
-																.addComponent(
-																		btnDelete)
-																.addComponent(
-																		btnMoveToWishlist)
-																.addComponent(
-																		btnPrint))
-												.addPreferredGap(
-														LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(
-														scrollPane1,
-														GroupLayout.DEFAULT_SIZE,
-														261, Short.MAX_VALUE)
-												.addContainerGap()));
+						.setVerticalGroup(
+								panelItemLayout.createParallelGroup()
+										.addGroup(
+												panelItemLayout.createSequentialGroup().addGap(9, 9, 9)
+														.addGroup(
+																panelItemLayout
+																		.createParallelGroup(
+																				GroupLayout.Alignment.BASELINE)
+																		.addComponent(btnAdd).addComponent(btnDelete)
+																		.addComponent(btnMoveToWishlist)
+																		.addComponent(btnPrint))
+												.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+												.addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 261,
+														Short.MAX_VALUE).addContainerGap()));
 			}
 			tabbedItem.addTab("Item", panelItem);
 
@@ -594,7 +572,7 @@ public class FrameMain extends JFrame {
 				{
 
 					// ---- tblWishlist ----
-					
+
 					// Object[][] objectForTable = new
 					// Object[arrItems.size()][5];
 
@@ -639,8 +617,7 @@ public class FrameMain extends JFrame {
 
 					insertTableRowsInWishList(modelWishList);
 					{
-						TableColumnModel cmWishlist = tblWishlist
-								.getColumnModel();
+						TableColumnModel cmWishlist = tblWishlist.getColumnModel();
 						cmWishlist.getColumn(0).setResizable(false);
 						cmWishlist.getColumn(1).setResizable(false);
 						cmWishlist.getColumn(2).setResizable(false);
@@ -655,89 +632,44 @@ public class FrameMain extends JFrame {
 					}
 					scrollPane2.setViewportView(tblWishlist);
 				}
-				//--- table column header ---
-				JTableHeader header = tblItem.getTableHeader();	     
+				// --- table column header ---
+				JTableHeader header = tblItem.getTableHeader();
 				header.addMouseListener(new TableHeaderMouseListener());
-				
+
 				// ---- btnDeleteWishList ----
 				btnDeleteWishList.setText("Delete");
 				btnDeleteWishList.addActionListener(e -> btnDeleteWishListActionPerformed(e));
-				
-				
+
 				// ---- btnCheckout ----
 				btnCheckout.setText("Checkout");
 				btnCheckout.addActionListener(e -> btnCheckoutActionPerformed(e));
 
 				GroupLayout panelItem2Layout = new GroupLayout(panelItem2);
 				panelItem2.setLayout(panelItem2Layout);
-				panelItem2Layout
-						.setHorizontalGroup(panelItem2Layout
-								.createParallelGroup()
-								.addGroup(
-										panelItem2Layout
-												.createSequentialGroup()
-												.addContainerGap()
-												.addGroup(
-														panelItem2Layout
-																.createParallelGroup()
-																.addComponent(
-																		scrollPane2,
-																		GroupLayout.DEFAULT_SIZE,
-																		711,
-																		Short.MAX_VALUE)
-																.addGroup(
-																		panelItem2Layout
-																				.createSequentialGroup()
-																				.addComponent(
-																						btnDeleteWishList)
-																				.addGap(18,
-																						18,
-																						18)
-																				.addComponent(
-																						btnCheckout)
-																				.addGap(0,
-																						505,
-																						Short.MAX_VALUE)))
-												.addContainerGap()));
-				panelItem2Layout
-						.setVerticalGroup(panelItem2Layout
-								.createParallelGroup()
-								.addGroup(
-										panelItem2Layout
-												.createSequentialGroup()
-												.addGap(9, 9, 9)
-												.addGroup(
-														panelItem2Layout
-																.createParallelGroup(
-																		GroupLayout.Alignment.BASELINE)
-																.addComponent(
-																		btnDeleteWishList)
-																.addComponent(
-																		btnCheckout))
-												.addPreferredGap(
-														LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(
-														scrollPane2,
-														GroupLayout.DEFAULT_SIZE,
-														261, Short.MAX_VALUE)
-												.addContainerGap()));
+				panelItem2Layout.setHorizontalGroup(panelItem2Layout.createParallelGroup().addGroup(panelItem2Layout
+						.createSequentialGroup().addContainerGap()
+						.addGroup(panelItem2Layout.createParallelGroup()
+								.addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 711, Short.MAX_VALUE)
+								.addGroup(panelItem2Layout.createSequentialGroup().addComponent(btnDeleteWishList)
+										.addGap(18, 18, 18).addComponent(btnCheckout).addGap(0, 505, Short.MAX_VALUE)))
+						.addContainerGap()));
+				panelItem2Layout.setVerticalGroup(panelItem2Layout.createParallelGroup()
+						.addGroup(panelItem2Layout.createSequentialGroup().addGap(9, 9, 9)
+								.addGroup(panelItem2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+										.addComponent(btnDeleteWishList).addComponent(btnCheckout))
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						.addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE).addContainerGap()));
 			}
 			tabbedItem.addTab("Wishlist", panelItem2);
 		}
 
 		GroupLayout contentPaneLayout = new GroupLayout(contentPane);
 		contentPane.setLayout(contentPaneLayout);
-		contentPaneLayout.setHorizontalGroup(contentPaneLayout
-				.createParallelGroup().addGroup(
-						contentPaneLayout.createSequentialGroup()
-								.addContainerGap().addComponent(tabbedItem)
-								.addContainerGap()));
-		contentPaneLayout.setVerticalGroup(contentPaneLayout
-				.createParallelGroup().addGroup(
-						GroupLayout.Alignment.TRAILING,
-						contentPaneLayout.createSequentialGroup()
-								.addContainerGap().addComponent(tabbedItem)
-								.addContainerGap()));
+		contentPaneLayout.setHorizontalGroup(contentPaneLayout.createParallelGroup().addGroup(contentPaneLayout
+				.createSequentialGroup().addContainerGap().addComponent(tabbedItem).addContainerGap()));
+		contentPaneLayout.setVerticalGroup(
+				contentPaneLayout.createParallelGroup().addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout
+						.createSequentialGroup().addContainerGap().addComponent(tabbedItem).addContainerGap()));
 		pack();
 		setLocationRelativeTo(getOwner());
 		// //GEN-END:initComponents
@@ -761,12 +693,12 @@ public class FrameMain extends JFrame {
 		}
 
 	}
-	
+
 	private void refreshTableItem(DefaultTableModel model) {
 		int counter = 0;
-		model.setRowCount(0);		
+		model.setRowCount(0);
 		Iterator<Item> it = arrItems.iterator();
-		
+
 		while (it.hasNext()) {
 			model.addRow(new Object[0]);
 			Item i = (Item) it.next();
@@ -780,24 +712,22 @@ public class FrameMain extends JFrame {
 		}
 
 	}
-	
+
 	private void insertTableRowsInWishList(DefaultTableModel model) {
 		int counter = 0;
 		model.setRowCount(0);
-		
+
 		arrWishLists = WishlistController.displayList();
 		Iterator<WishList> it = arrWishLists.iterator();
-		
+
 		while (it.hasNext()) {
 			model.addRow(new Object[0]);
 			WishList w = (WishList) it.next();
 			model.setValueAt(w.getId(), counter, 0);
 			model.setValueAt(Boolean.FALSE, counter, 1);
 			model.setValueAt(w.getitem().getName(), counter, 2);
-			model.setValueAt(w.getitem().getCategory().getName(),
-					counter, 3);
-			model.setValueAt(w.getitem().getPriority().getName(),
-					counter, 4);
+			model.setValueAt(w.getitem().getCategory().getName(), counter, 3);
+			model.setValueAt(w.getitem().getPriority().getName(), counter, 4);
 			model.setValueAt(w.getitem().getQuantity(), counter, 5);
 			counter++;
 		}
@@ -839,17 +769,15 @@ public class FrameMain extends JFrame {
 
 		private void btnAddActionPerformed(ActionEvent e) {
 			// add the item to the database
-			
-			if(txtName.getText().trim().equals("")) {
+
+			if (txtName.getText().trim().equals("")) {
 				JOptionPane.showMessageDialog(this, "Enter the name for an item.");
 				return;
 			}
 
 			Item item = new Item(0, txtName.getText(),
-					CategoryController.getCategoryByName(comboboxCategory
-							.getSelectedItem().toString()),
-					PriorityController.getPriorityByName(comboboxPriority
-							.getSelectedItem().toString()),
+					CategoryController.getCategoryByName(comboboxCategory.getSelectedItem().toString()),
+					PriorityController.getPriorityByName(comboboxPriority.getSelectedItem().toString()),
 					(Integer) spinnerQuantity.getValue());
 
 			if (item.addItem()) {
@@ -860,9 +788,8 @@ public class FrameMain extends JFrame {
 
 		}
 
-		
 		private void initComponents() {
-			
+
 			label1 = new JLabel();
 			txtName = new JTextField();
 			label2 = new JLabel();
@@ -874,7 +801,7 @@ public class FrameMain extends JFrame {
 			btnAdd = new JButton();
 			btnCancel = new JButton();
 			btnPrint = new JButton();
-			
+
 			spinnerQuantity.setValue(new Integer(1));
 
 			// ======== this ========
@@ -891,8 +818,7 @@ public class FrameMain extends JFrame {
 
 			// getting the list of the category
 
-			ArrayList<Category> arrCategories = CategoryController
-					.displayList();
+			ArrayList<Category> arrCategories = CategoryController.displayList();
 			Iterator<Category> itC = arrCategories.iterator();
 			String[] arrayCategory = new String[arrCategories.size()];
 
@@ -903,15 +829,13 @@ public class FrameMain extends JFrame {
 				counter++;
 			}
 
-			comboboxCategory
-					.setModel(new DefaultComboBoxModel<>(arrayCategory));
+			comboboxCategory.setModel(new DefaultComboBoxModel<>(arrayCategory));
 
 			// ---- comboboxPriority ----
 
 			// getting the list of the priority
 
-			ArrayList<Priority> arrPriorities = PriorityController
-					.displayList();
+			ArrayList<Priority> arrPriorities = PriorityController.displayList();
 			Iterator<Priority> itP = arrPriorities.iterator();
 			String[] arrayPriority = new String[arrPriorities.size()];
 
@@ -921,8 +845,7 @@ public class FrameMain extends JFrame {
 				arrayPriority[counter] = p.getName();
 				counter++;
 			}
-			comboboxPriority
-					.setModel(new DefaultComboBoxModel<>(arrayPriority));
+			comboboxPriority.setModel(new DefaultComboBoxModel<>(arrayPriority));
 
 			// ---- label3 ----
 			label3.setText("Priority:");
@@ -940,177 +863,55 @@ public class FrameMain extends JFrame {
 
 			GroupLayout contentPaneLayout = new GroupLayout(contentPane);
 			contentPane.setLayout(contentPaneLayout);
-			contentPaneLayout
-					.setHorizontalGroup(contentPaneLayout
-							.createParallelGroup()
-							.addGroup(
-									contentPaneLayout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addGroup(
-													contentPaneLayout
-															.createParallelGroup()
-															.addGroup(
-																	contentPaneLayout
-																			.createSequentialGroup()
-																			.addComponent(
-																					label1,
-																					GroupLayout.PREFERRED_SIZE,
-																					91,
-																					GroupLayout.PREFERRED_SIZE)
-																			.addGap(10,
-																					10,
-																					10)
-																			.addComponent(
-																					txtName,
-																					GroupLayout.PREFERRED_SIZE,
-																					206,
-																					GroupLayout.PREFERRED_SIZE))
-															.addGroup(
-																	contentPaneLayout
-																			.createSequentialGroup()
-																			.addComponent(
-																					label2,
-																					GroupLayout.PREFERRED_SIZE,
-																					91,
-																					GroupLayout.PREFERRED_SIZE)
-																			.addGap(11,
-																					11,
-																					11)
-																			.addComponent(
-																					comboboxCategory,
-																					GroupLayout.PREFERRED_SIZE,
-																					205,
-																					GroupLayout.PREFERRED_SIZE))
-															.addGroup(
-																	contentPaneLayout
-																			.createSequentialGroup()
-																			.addComponent(
-																					label3,
-																					GroupLayout.PREFERRED_SIZE,
-																					91,
-																					GroupLayout.PREFERRED_SIZE)
-																			.addGap(11,
-																					11,
-																					11)
-																			.addComponent(
-																					comboboxPriority,
-																					GroupLayout.PREFERRED_SIZE,
-																					205,
-																					GroupLayout.PREFERRED_SIZE))
-															.addGroup(
-																	contentPaneLayout
-																			.createSequentialGroup()
-																			.addComponent(
-																					label4,
-																					GroupLayout.PREFERRED_SIZE,
-																					91,
-																					GroupLayout.PREFERRED_SIZE)
-																			.addGap(14,
-																					14,
-																					14)
-																			.addComponent(
-																					spinnerQuantity,
-																					GroupLayout.PREFERRED_SIZE,
-																					53,
-																					GroupLayout.PREFERRED_SIZE))
-															.addGroup(
-																	contentPaneLayout
-																			.createSequentialGroup()
-																			.addComponent(
-																					btnAdd)
-																			.addGap(146,
-																					146,
-																					146)
-																			.addComponent(
-																					btnCancel)))
-											.addContainerGap(16,
-													Short.MAX_VALUE)));
-			contentPaneLayout
-					.setVerticalGroup(contentPaneLayout
-							.createParallelGroup()
-							.addGroup(
-									contentPaneLayout
-											.createSequentialGroup()
-											.addContainerGap()
-											.addGroup(
-													contentPaneLayout
-															.createParallelGroup()
-															.addGroup(
-																	contentPaneLayout
-																			.createSequentialGroup()
-																			.addGap(6,
-																					6,
-																					6)
-																			.addComponent(
-																					label1))
-															.addComponent(
-																	txtName,
-																	GroupLayout.PREFERRED_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.PREFERRED_SIZE))
-											.addGap(8, 8, 8)
-											.addGroup(
-													contentPaneLayout
-															.createParallelGroup()
-															.addGroup(
-																	contentPaneLayout
-																			.createSequentialGroup()
-																			.addGap(4,
-																					4,
-																					4)
-																			.addComponent(
-																					label2))
-															.addComponent(
-																	comboboxCategory,
-																	GroupLayout.PREFERRED_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.PREFERRED_SIZE))
-											.addGap(4, 4, 4)
-											.addGroup(
-													contentPaneLayout
-															.createParallelGroup()
-															.addGroup(
-																	contentPaneLayout
-																			.createSequentialGroup()
-																			.addGap(4,
-																					4,
-																					4)
-																			.addComponent(
-																					label3))
-															.addComponent(
-																	comboboxPriority,
-																	GroupLayout.PREFERRED_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.PREFERRED_SIZE))
-											.addGap(10, 10, 10)
-											.addGroup(
-													contentPaneLayout
-															.createParallelGroup()
-															.addGroup(
-																	contentPaneLayout
-																			.createSequentialGroup()
-																			.addGap(6,
-																					6,
-																					6)
-																			.addComponent(
-																					label4))
-															.addComponent(
-																	spinnerQuantity,
-																	GroupLayout.PREFERRED_SIZE,
-																	GroupLayout.DEFAULT_SIZE,
-																	GroupLayout.PREFERRED_SIZE))
-											.addGap(16, 16, 16)
-											.addGroup(
-													contentPaneLayout
-															.createParallelGroup()
-															.addComponent(
-																	btnAdd)
-															.addComponent(
-																	btnCancel))
-											.addContainerGap(
-													GroupLayout.DEFAULT_SIZE,
-													Short.MAX_VALUE)));
+			contentPaneLayout.setHorizontalGroup(contentPaneLayout.createParallelGroup()
+					.addGroup(contentPaneLayout.createSequentialGroup().addContainerGap()
+							.addGroup(contentPaneLayout.createParallelGroup()
+									.addGroup(contentPaneLayout.createSequentialGroup()
+											.addComponent(label1, GroupLayout.PREFERRED_SIZE, 91,
+													GroupLayout.PREFERRED_SIZE)
+											.addGap(10, 10, 10).addComponent(txtName, GroupLayout.PREFERRED_SIZE, 206,
+													GroupLayout.PREFERRED_SIZE))
+							.addGroup(contentPaneLayout.createSequentialGroup()
+									.addComponent(label2, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
+									.addGap(11, 11, 11).addComponent(comboboxCategory, GroupLayout.PREFERRED_SIZE, 205,
+											GroupLayout.PREFERRED_SIZE))
+							.addGroup(contentPaneLayout.createSequentialGroup()
+									.addComponent(label3, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
+									.addGap(11, 11, 11).addComponent(comboboxPriority, GroupLayout.PREFERRED_SIZE, 205,
+											GroupLayout.PREFERRED_SIZE))
+							.addGroup(contentPaneLayout.createSequentialGroup()
+									.addComponent(label4, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
+									.addGap(14, 14, 14).addComponent(spinnerQuantity, GroupLayout.PREFERRED_SIZE, 53,
+											GroupLayout.PREFERRED_SIZE))
+							.addGroup(contentPaneLayout.createSequentialGroup().addComponent(btnAdd)
+									.addGap(146, 146, 146).addComponent(btnCancel)))
+					.addContainerGap(16, Short.MAX_VALUE)));
+			contentPaneLayout.setVerticalGroup(contentPaneLayout.createParallelGroup()
+					.addGroup(contentPaneLayout.createSequentialGroup().addContainerGap()
+							.addGroup(contentPaneLayout.createParallelGroup()
+									.addGroup(contentPaneLayout.createSequentialGroup().addGap(6, 6, 6)
+											.addComponent(label1))
+									.addComponent(txtName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+											GroupLayout.PREFERRED_SIZE))
+					.addGap(8, 8, 8)
+					.addGroup(contentPaneLayout.createParallelGroup()
+							.addGroup(contentPaneLayout.createSequentialGroup().addGap(4, 4, 4).addComponent(label2))
+							.addComponent(comboboxCategory, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+									GroupLayout.PREFERRED_SIZE))
+					.addGap(4, 4, 4)
+					.addGroup(contentPaneLayout.createParallelGroup()
+							.addGroup(contentPaneLayout.createSequentialGroup().addGap(4, 4, 4).addComponent(label3))
+							.addComponent(comboboxPriority, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+									GroupLayout.PREFERRED_SIZE))
+					.addGap(10, 10, 10)
+					.addGroup(contentPaneLayout.createParallelGroup()
+							.addGroup(contentPaneLayout.createSequentialGroup().addGap(6, 6, 6).addComponent(label4))
+							.addComponent(spinnerQuantity, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+									GroupLayout.PREFERRED_SIZE))
+							.addGap(16, 16, 16)
+							.addGroup(contentPaneLayout.createParallelGroup().addComponent(btnAdd)
+									.addComponent(btnCancel))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 			pack();
 			setLocationRelativeTo(getOwner());
 			// JFormDesigner - End of component initialization
@@ -1132,116 +933,121 @@ public class FrameMain extends JFrame {
 		private JButton btnCancel;
 		// JFormDesigner - End of variables declaration //GEN-END:variables
 	}
-	
-	
-	//new print form
+
+	// new print form
 	public class PrintForm extends JFrame {
-		public PrintForm() {
+		public PrintForm(TableModel tableModel2, boolean isWishList) {
+			this.tableModel = tableModel2;
+			this.isWishList = isWishList;
 			initComponents();
 		}
 
 		private void initComponents() {
-			// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+			// JFormDesigner - Component initialization - DO NOT MODIFY
+			// //GEN-BEGIN:initComponents
 			// Generated using JFormDesigner Evaluation license - s s
 			scrollPane1 = new JScrollPane();
 			tblPrintFinal = new JTable();
 			btnPrintFinal = new JButton();
 
-			//======== this ========
+			// ======== this ========
 			setTitle("Print Table");
 			setResizable(false);
 			Container contentPane = getContentPane();
 
-			//======== scrollPane1 ========
+			// ======== scrollPane1 ========
 			{
 
-				//---- tblPrintFinal ----
-				
-				
-				tblPrintFinal.setModel(tblItem.getModel());
+				// ---- tblPrintFinal ----
+
+				tblPrintFinal.setModel(tableModel);
 				{
 					TableColumnModel cm = tblPrintFinal.getColumnModel();
 					
-					cm.getColumn(0).setResizable(false);
-					cm.getColumn(0).setPreferredWidth(0);
-					cm.getColumn(0).setMinWidth(0);
-					cm.getColumn(0).setWidth(0);
-					cm.getColumn(0).setMaxWidth(0);
-					
-					cm.getColumn(1).setResizable(false);
-					cm.getColumn(1).setPreferredWidth(0);
-					cm.getColumn(1).setMinWidth(0);
-					cm.getColumn(1).setWidth(0);
-					cm.getColumn(1).setMaxWidth(0);
-					
+					if (!isWishList) {
+						cm.getColumn(0).setResizable(false);
+						cm.getColumn(0).setPreferredWidth(0);
+						cm.getColumn(0).setMinWidth(0);
+						cm.getColumn(0).setWidth(0);
+						cm.getColumn(0).setMaxWidth(0);
+						
+						cm.getColumn(1).setResizable(false);
+						cm.getColumn(1).setPreferredWidth(0);
+						cm.getColumn(1).setMinWidth(0);
+						cm.getColumn(1).setWidth(0);
+						cm.getColumn(1).setMaxWidth(0);
+						
+						
+					}
+
 				}
 				scrollPane1.setViewportView(tblPrintFinal);
 			}
 
-			//---- btnPrintFinal ----
+			// ---- btnPrintFinal ----
 			btnPrintFinal.setText("Print");
 			btnPrintFinal.addActionListener(e -> btnPrintFinalActionListener(e));
 
 			GroupLayout contentPaneLayout = new GroupLayout(contentPane);
 			contentPane.setLayout(contentPaneLayout);
-			contentPaneLayout.setHorizontalGroup(
-				contentPaneLayout.createParallelGroup()
-					.addGroup(contentPaneLayout.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(contentPaneLayout.createParallelGroup()
-							.addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
-							.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-								.addGap(0, 668, Short.MAX_VALUE)
-								.addComponent(btnPrintFinal)))
-						.addContainerGap())
-			);
-			contentPaneLayout.setVerticalGroup(
-				contentPaneLayout.createParallelGroup()
-					.addGroup(contentPaneLayout.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 393, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(btnPrintFinal)
-						.addContainerGap(7, Short.MAX_VALUE))
-			);
+			contentPaneLayout.setHorizontalGroup(contentPaneLayout.createParallelGroup()
+					.addGroup(contentPaneLayout.createSequentialGroup().addContainerGap()
+							.addGroup(contentPaneLayout.createParallelGroup()
+									.addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
+									.addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+											.addGap(0, 668, Short.MAX_VALUE).addComponent(btnPrintFinal)))
+					.addContainerGap()));
+			contentPaneLayout
+					.setVerticalGroup(contentPaneLayout.createParallelGroup()
+							.addGroup(contentPaneLayout.createSequentialGroup().addContainerGap()
+									.addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 393,
+											GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(btnPrintFinal)
+									.addContainerGap(7, Short.MAX_VALUE)));
 			pack();
 			setLocationRelativeTo(getOwner());
-			// JFormDesigner - End of component initialization  //GEN-END:initComponents
+			// JFormDesigner - End of component initialization
+			// //GEN-END:initComponents
 		}
 
 		private void btnPrintFinalActionListener(ActionEvent e) {
 			MessageFormat header = new MessageFormat("Shopping List");
-			
+
 			MessageFormat footer = new MessageFormat("Enjoy Shopping :)");
-			
+
 			boolean fitWidth = true;
 			boolean showPrintDialog = true;
 			boolean interactive = true;
-			
-			//determine the print mode
+
+			// determine the print mode
 			JTable.PrintMode mode = fitWidth ? JTable.PrintMode.FIT_WIDTH : JTable.PrintMode.NORMAL;
-			
-			
+
 			try {
 				boolean printed = tblPrintFinal.print(mode, header, footer, showPrintDialog, null, interactive, null);
-				if(printed){
-					JOptionPane.showMessageDialog(this, "Printing Complete", "Printing Result", JOptionPane.INFORMATION_MESSAGE);
-				}else {
-					JOptionPane.showMessageDialog(this, "Printing Cancelled",  "Printing Result", JOptionPane.INFORMATION_MESSAGE);
+				if (printed) {
+					JOptionPane.showMessageDialog(this, "Printing Complete", "Printing Result",
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(this, "Printing Cancelled", "Printing Result",
+							JOptionPane.INFORMATION_MESSAGE);
 				}
-				
+
 			} catch (PrinterException e1) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(this, "Printing Failed: " + e1.getMessage(),  "Printing Result", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Printing Failed: " + e1.getMessage(), "Printing Result",
+						JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 
-		// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+		// JFormDesigner - Variables declaration - DO NOT MODIFY
+		// //GEN-BEGIN:variables
 		// Generated using JFormDesigner Evaluation license - s s
 		private JScrollPane scrollPane1;
 		private JTable tblPrintFinal;
 		private JButton btnPrintFinal;
-		// JFormDesigner - End of variables declaration  //GEN-END:variables
+		private TableModel tableModel;
+		private boolean isWishList;
+		// JFormDesigner - End of variables declaration //GEN-END:variables
 	}
 
 }
