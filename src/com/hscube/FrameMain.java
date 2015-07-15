@@ -275,8 +275,11 @@ public class FrameMain extends JFrame {
 	}
 
 	private void btnPrintActionPerformed(ActionEvent e) {
+
 		PrintForm printForm = new PrintForm(tblItem.getModel(), false);
+
 		printForm.setVisible(true);
+
 	}
 
 	private void mnuExitActionPerformed(ActionEvent e) {
