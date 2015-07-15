@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -1209,15 +1210,29 @@ public class FrameMain extends JFrame {
 		}
 
 		private void btnPrintFinalActionListener(ActionEvent e) {
+			MessageFormat header = new MessageFormat("Shopping List");
+			
+			MessageFormat footer = new MessageFormat("Enjoy Shopping :)");
+			
+			boolean fitWidth = true;
+			boolean showPrintDialog = true;
+			boolean interactive = true;
+			
+			//determine the print mode
+			JTable.PrintMode mode = fitWidth ? JTable.PrintMode.FIT_WIDTH : JTable.PrintMode.NORMAL;
+			
+			
 			try {
-				boolean printed = tblPrintFinal.print();
+				boolean printed = tblPrintFinal.print(mode, header, footer, showPrintDialog, null, interactive, null);
 				if(printed){
-					JOptionPane.showMessageDialog(this, "Items Printed.");
+					JOptionPane.showMessageDialog(this, "Printing Complete", "Printing Result", JOptionPane.INFORMATION_MESSAGE);
+				}else {
+					JOptionPane.showMessageDialog(this, "Printing Cancelled",  "Printing Result", JOptionPane.INFORMATION_MESSAGE);
 				}
 				
 			} catch (PrinterException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Printing Failed: " + e1.getMessage(),  "Printing Result", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 
