@@ -267,12 +267,8 @@ public class FrameMain extends JFrame {
 	}
 	
 	private void btnPrintActionPerformed(ActionEvent e) {
-<<<<<<< HEAD
-		JOptionPane.showMessageDialog(this, "Need to print the items");
-=======
 		PrintForm printForm = new PrintForm();
 		printForm.setVisible(true);
->>>>>>> 00535c431bf69295cdc3275cecd57484e379c701
 	}
 
 	private void mnuExitActionPerformed(ActionEvent e) {
