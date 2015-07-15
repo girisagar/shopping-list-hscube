@@ -160,23 +160,23 @@ public class FrameMain extends JFrame {
 			counter++;
 		}
 
-		// try {
-		// boolean printed = tblPrint.print();
-		// if(printed){
-		// if (WishlistController.deleteItemFromWishList(arrList)) {
-		// insertTableRowsInWishList((DefaultTableModel)
-		// tblWishlist.getModel());
-		// JOptionPane.showMessageDialog(this, "Items Printed.");
-		// }
-		// }
-		//
-		// } catch (PrinterException e1) {
-		// // TODO Auto-generated catch block
-		// e1.printStackTrace();
-		// }
 
 		PrintForm printForm = new PrintForm(modelPrint, true);
 		printForm.setVisible(true);
+		boolean printed = true;
+		 try {
+			 if(printed){
+				 if (WishlistController.deleteItemFromWishList(arrList)) {
+				 insertTableRowsInWishList((DefaultTableModel)
+				 tblWishlist.getModel());
+//			 JOptionPane.showMessageDialog(this, "Items Printed.");
+			 }
+			 }
+			
+			 } catch (Exception e1) {				 
+			 // TODO Auto-generated catch block
+			 e1.printStackTrace();
+		 }
 
 	}
 
@@ -1013,7 +1013,7 @@ public class FrameMain extends JFrame {
 		private void btnPrintFinalActionListener(ActionEvent e) {
 			MessageFormat header = new MessageFormat("Shopping List");
 
-			MessageFormat footer = new MessageFormat("Enjoy Shopping :)");
+			MessageFormat footer = new MessageFormat("Thank You:");
 
 			boolean fitWidth = true;
 			boolean showPrintDialog = true;

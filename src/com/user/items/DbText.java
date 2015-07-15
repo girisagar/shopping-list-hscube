@@ -18,7 +18,4 @@ public class DbText {
 	//for table wishList;
 	public static String wishlist = "id"; 
 	public static String wishlistItemId = "item_id";
-	
-	
-
 }
